@@ -1,770 +1,451 @@
-# CloudCost Copilot - Requirements Document
+# PinPoint-Bharat: Requirements Document
 
-## Project Overview
+## Executive Summary
 
-**Project Name:** CloudCost Copilot  
-**Track:** Student Track - AI for Learning & Developer Productivity  
-**Tagline:** AI-powered AWS cost guardian that prevents bill shock and teaches cloud economics
+PinPoint-Bharat is a **Generative Geocoding Agent** that solves India's "Last Mile" delivery crisis by converting unstructured vernacular voice instructions (e.g., "Blue temple ke peeche") into precise GPS coordinates through multimodal AI analysis of real-time satellite imagery.
 
-## Problem Statement
+---
 
-### The Challenge
-Students and developers learning AWS face a critical barrier: **fear of unexpected costs**. This fear prevents experimentation and learning, which are essential for cloud skill development.
+## 1. Problem Statement
 
-**Real Statistics (Verified):**
-- AWS free tier includes 750 hours/month EC2 (t2.micro/t3.micro only)
-- Students commonly forget to stop instances after tutorials
-- A single m5.large instance costs $69.12/month (exhausts $100 credits in 45 days)
-- AWS Budgets alerts arrive 4-8 hours after threshold breach (too late)
+### The $5 Billion Last-Mile Crisis
 
-### Current Pain Points
-1. **Delayed Alerts:** AWS Budgets uses Cost Explorer data (4-hour delay)
-2. **Complex Free Tier:** 60+ services with different rules (EC2: hours, S3: GB, Lambda: requests)
-3. **No Context:** Alerts say "you spent $50" but not WHY or HOW TO FIX
-4. **Fear-Based Learning:** Students avoid experimenting with new services
-5. **Manual Monitoring:** Checking console every hour is impractical
+**Market Context:**
+- India's logistics sector loses **$5 billion annually** due to failed last-mile deliveries
+- 68% of rural addresses are **landmark-based** ("Near the banyan tree", "Behind the blue temple")
+- Standard geocoding APIs (Google Maps, Mapbox) fail in rural India where formal addresses don't exist
+- Delivery agents spend 40% of time calling customers for directions
 
-### What Exists Today (Competitive Landscape)
-- **AWS Budgets:** Free, but 4-hour delay, no recommendations
-- **AWS Cost Anomaly Detection:** Detects unusual spend, but no prevention
-- **CloudHealth/Cloudability:** Enterprise-focused ($500+/month), complex setup
-- **AWS Trusted Advisor:** Basic checks, but requires Business/Enterprise support ($100+/month)
+**Critical Barriers:**
+- **No formal addressing system** in 600,000+ villages
+- **Vernacular descriptions** don't translate to coordinates (Hindi: "मंदिर के पीछे", Tamil: "கோவிலுக்கு பின்னால்")
+- **Dynamic landmarks** (seasonal markets, temporary structures) not in maps
+- **Cognitive load** on delivery agents navigating unfamiliar terrain
 
-## Solution Overview
+**Business Impact:**
+- E-commerce companies: 15-20% failed deliveries in Tier-2/3 cities
+- Logistics cost: ₹80-120 per failed delivery attempt
+- Customer churn: 35% after 2 failed deliveries
+- Emergency services: 12-minute average delay in rural areas
 
-CloudCost Copilot is an **AI-powered AWS cost optimization platform** that prevents bill shock through intelligent monitoring, ML-based predictions, and agentic AI recommendations.
+---
 
-### What It Does
-1. **Monitors AWS costs hourly** (limited by Cost Explorer 4-hour delay)
-2. **Predicts future spend** using Amazon Forecast (7-day ML forecasts)
-3. **Generates AI recommendations** via Amazon Bedrock Agents (autonomous cost optimization)
-4. **Integrates with developer workflows** (Slack, GitHub Actions, CI/CD)
-5. **Teaches cloud economics** through contextual explanations and gamification
-6. **Executes optimizations safely** (user approval required, backups created)
+## 2. Solution Overview
 
-### Core Value Propositions
+### Core Value Proposition
 
-**For Students:**  
-*"Learn AWS fearlessly - your AI copilot prevents bill shock and teaches cloud economics"*
+**"Speak your location in any language → Get GPS coordinates in 3 seconds"**
 
-**For Developers:**  
-*"Ship fast without surprise bills - automated cost reviews in your workflow"*
+### Technology Approach
 
-**For Startups:**  
-*"Optimize AWS spend without hiring a FinOps engineer - save 30% on autopilot"*
+A **multimodal agentic system** that:
+1. Accepts vernacular voice descriptions via WhatsApp/mobile app
+2. Extracts spatial entities using Amazon Bedrock (Anchor, Target, Vector)
+3. Fetches satellite imagery from Amazon Location Service
+4. Identifies landmarks using Amazon SageMaker computer vision
+5. Calculates precise GPS coordinates using geospatial mathematics
 
-### Key Differentiators
-- ✅ **Agentic AI:** Uses Amazon Bedrock Agents (not just text generation)
-- ✅ **Developer-first:** Slack bots, GitHub Actions, API-first architecture
-- ✅ **Educational:** Gamification, learning paths, achievement system
-- ✅ **Safe:** User approval required, backups created, audit logs
-- ✅ **Latest AWS features:** Database Savings Plans, Compute Optimizer, Cost Anomaly Detection
+---
 
-### Honest Limitations
-- **Not real-time:** Cost data has 4-hour delay (AWS Cost Explorer limitation)
-- **MVP scope:** Supports EC2, S3, Lambda, RDS, DynamoDB (covers 85% of costs)
-- **Requires IAM permissions:** Users must create read-only IAM role (5-min setup)
-- **Predictions need history:** Requires 7+ days of usage data for accurate forecasts
-- **Single AWS account in free tier:** Multi-account support in Pro tier ($10/month)
+## 3. Functional Requirements
 
-## Target Users
+### FR-1: Vernacular Voice Input
+**Priority:** P0  
+**Description:** Accept voice notes in 22 Indian languages
 
-### Primary Users (Hackathon Focus)
-- **Computer Science Students** (18-24 years)
-  - Learning cloud computing for coursework
-  - Building personal projects with AWS Educate credits
-  - Preparing for AWS certifications
+**Input Specifications:**
+- **Supported Languages:** Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Odia, Assamese, Urdu, Kashmiri, Konkani, Nepali, Sindhi, Dogri, Manipuri, Bodo, Santali, Maithili, Sanskrit
+- **Audio Format:** MP3, WAV, OGG (WhatsApp-compatible)
+- **Duration:** 5-60 seconds
+- **Quality:** 8 kHz minimum sampling rate
 
-### Secondary Users (Broader Market)
-- **Professional Developers**
-  - Managing personal AWS accounts for side projects
-  - Learning new AWS services without cost anxiety
-  - Experimenting with serverless architectures
-  
-- **Indie Hackers & Solo Founders**
-  - Building MVPs on tight budgets ($100-500/month)
-  - Need cost visibility without hiring FinOps engineer
-  - Shipping fast without surprise bills
-
-- **Startup Engineering Teams (2-10 people)**
-  - Pre-Series A startups optimizing burn rate
-  - Need cost accountability per developer
-  - Want automated cost reviews in CI/CD
-
-- **Bootcamp Students & Career Switchers**
-  - Learning cloud development
-  - Building portfolio projects
-  - Limited AWS credits ($100-200)
-
-### User Personas
-
-**Persona 1: "Anxious Student Alex"**
-- Age: 21, CS major
-- AWS credits: $100 (AWS Educate)
-- Pain: Scared to try new services, checks console 10x/day
-- Goal: Learn AWS without exhausting credits
-
-**Persona 2: "Indie Hacker Priya"**
-- Age: 28, solo founder
-- AWS spend: $150/month
-- Pain: No time to optimize costs, bills creeping up
-- Goal: Automate cost monitoring, focus on product
-
-**Persona 3: "Startup Dev Raj"**
-- Age: 26, backend engineer at 5-person startup
-- AWS spend: $2K/month (team account)
-- Pain: No visibility into who's spending what
-- Goal: Cost accountability, prevent waste before deployment
-
-## Functional Requirements
-
-### FR1: Hourly Cost Monitoring
-**Priority:** Critical  
-**Description:** Monitor AWS account costs with best-effort frequency
+**Processing:**
+- **Amazon Transcribe** with language auto-detection
+- Noise reduction for outdoor environments
+- Dialect handling (e.g., Bhojpuri variant of Hindi)
 
 **Acceptance Criteria:**
-- System polls AWS Cost Explorer API every 1 hour (respects 4-hour data delay)
-- Tracks costs for MVP services: EC2, S3, Lambda, RDS (expandable later)
-- Displays current spend vs. budget (updated hourly, labeled "Last updated: X hours ago")
-- Shows cost breakdown by service
-- Implements exponential backoff for API rate limits (4 requests/second max)
-- Caches Cost Explorer responses for 1 hour to reduce API costs
+- 95% transcription accuracy for clear audio
+- <2 second transcription latency
+- Handle background noise (traffic, wind)
 
-**Technical Constraints:**
-- Cost Explorer data is delayed 4-8 hours (AWS limitation)
-- API cost: $0.01 per request (must minimize calls)
-- Rate limit: 4 requests/second
+---
 
-### FR2: Cost Forecasting
-**Priority:** Critical  
-**Description:** Predict future costs using Amazon Forecast service
+### FR-2: Spatial Entity Extraction
+**Priority:** P0  
+**Description:** Parse natural language into structured spatial relationships
 
-**Acceptance Criteria:**
-- Uses Amazon Forecast (time-series ML) for 7-day and 30-day predictions
-- Requires minimum 7 days of historical data (shows "Insufficient data" otherwise)
-- Displays prediction with confidence interval (e.g., "$45-55 with 80% confidence")
-- Alerts trigger when forecasted spend exceeds thresholds:
-  - Warning: 70% of budget
-  - Critical: 90% of budget
-- Notifications via email and in-app (SMS optional, costs extra)
-- Prediction accuracy target: ±20% (realistic for student usage patterns)
+**Entity Types:**
+- **Anchor Landmark:** Primary reference point (temple, school, water tank)
+- **Target Location:** Destination (house, shop, farm)
+- **Directional Vector:** Spatial relationship (behind, 50m north, opposite)
+- **Contextual Attributes:** Color, size, unique features (blue temple, big banyan tree)
 
-**Technical Implementation:**
-- Amazon Forecast dataset: daily cost data
-- Predictor: DeepAR+ algorithm (handles seasonality)
-- Forecast horizon: 7 days (updated daily)
-- Fallback: Linear regression if Forecast API fails
-
-### FR3: Waste Detection (CloudWatch-Based)
-**Priority:** Critical  
-**Description:** Identify idle or underutilized resources using CloudWatch metrics
-
-**Acceptance Criteria:**
-- **EC2 Idle Detection:**
-  - CPU < 5% for 4+ hours (excludes Spot instances)
-  - Network I/O < 1 MB/hour
-  - Excludes instances with tags: `Environment=production` or `AutoStop=false`
-- **Unattached EBS Volumes:**
-  - State = "available" (not attached to any instance)
-  - Age > 7 days (grace period for new volumes)
-- **S3 Infrequent Access:**
-  - Buckets with < 100 GET requests/month (CloudWatch S3 metrics)
-  - Recommend Glacier/Intelligent-Tiering
-- **RDS Low Usage:**
-  - DatabaseConnections < 5 for 24+ hours
-  - CPU < 10% for 24+ hours
-- **Free Tier Tracking (MVP: EC2, S3, Lambda only):**
-  - EC2: 750 hours/month (t2.micro/t3.micro only)
-  - S3: 5 GB storage, 20K GET, 2K PUT
-  - Lambda: 1M requests, 400K GB-seconds
-- Provides cost impact: "Stopping this instance saves $0.0116/hour = $8.35/month"
-
-**Safety Rules:**
-- Never flag resources with `DoNotDelete` or `Production` tags
-- Exclude Reserved Instances and Savings Plans (stopping doesn't save money)
-- Exclude instances in Auto Scaling Groups
-
-### FR4: Agentic AI Recommendations (Bedrock Agents)
-**Priority:** Critical  
-**Description:** Autonomous AI agents that analyze costs, generate recommendations, and execute optimizations
-
-**Architecture:**
-- Uses **Amazon Bedrock Agents** with multi-agent collaboration
-- Three specialized agents working together:
-  1. **Analyzer Agent:** Detects waste, analyzes patterns, identifies anomalies
-  2. **Optimizer Agent:** Generates recommendations using AWS Compute Optimizer + Database Savings Plans
-  3. **Executor Agent:** Executes approved optimizations via function calling (tool use)
-
-**Acceptance Criteria:**
-
-**Agent 1: Analyzer Agent**
-- **Purpose:** Continuous cost monitoring and anomaly detection
-- **Model:** Amazon Nova Lite
-- **Data Sources:**
-  - Cost Explorer API (hourly polling)
-  - CloudWatch metrics (EC2 CPU, RDS connections, S3 requests)
-  - AWS Cost Anomaly Detection API
-- **Capabilities:**
-  - Detects idle resources (EC2 CPU < 5% for 4+ hours)
-  - Identifies cost spikes (>20% increase week-over-week)
-  - Analyzes spending patterns (weekday vs weekend, time of day)
-  - Triggers Optimizer Agent when waste detected
-- **Output:** Structured waste report with resource IDs and cost impact
-
-**Agent 2: Optimizer Agent**
-- **Purpose:** Generate actionable cost optimization recommendations
-- **Model:** Amazon Nova Lite (primary), Claude 3.5 Haiku (fallback)
-- **Integrations:**
-  - **AWS Compute Optimizer API:** Official EC2/Lambda rightsizing recommendations
-  - **Database Savings Plans API:** Analyze RDS/DynamoDB for commitment opportunities
-  - **AWS Trusted Advisor API:** Cross-reference with TA recommendations (if available)
-- **Recommendation Types:**
-  1. **Immediate:** Stop idle EC2, delete unattached EBS (saves money today)
-  2. **Short-term:** Rightsize instances, switch storage classes (1-week implementation)
-  3. **Long-term:** Reserved Instances, Savings Plans (requires commitment)
-- **Each recommendation includes:**
-  - Estimated savings ($/month) with detailed calculation
-  - Implementation difficulty (Easy/Medium/Hard)
-  - Step-by-step instructions (AWS Console + CLI + Terraform)
-  - Trade-offs and risks (e.g., "Stopping instance = downtime")
-  - Rollback instructions
-  - Confidence score (0-100%)
-  - Data sources (CloudWatch, Compute Optimizer, Cost Explorer)
-
-**Agent 3: Executor Agent**
-- **Purpose:** Safely execute approved optimizations via AWS API calls
-- **Model:** Amazon Nova Lite
-- **Tool Use (Function Calling):**
-  - `stop_ec2_instance(instance_id)` → Calls `ec2:StopInstances`
-  - `create_ami_backup(instance_id, name)` → Calls `ec2:CreateImage`
-  - `delete_ebs_volume(volume_id)` → Calls `ec2:DeleteVolume`
-  - `create_ebs_snapshot(volume_id)` → Calls `ec2:CreateSnapshot`
-  - `modify_s3_lifecycle(bucket, policy)` → Calls `s3:PutLifecycleConfiguration`
-  - `purchase_savings_plan(commitment)` → Calls `savingsplans:CreateSavingsPlan`
-- **Safety Mechanisms:**
-  - Requires explicit user approval (no auto-execution)
-  - Creates backups before destructive actions (AMI, snapshots)
-  - Validates IAM permissions before execution
-  - Logs all actions in DynamoDB audit trail
-  - Sends email confirmation after each action
-  - Rate limit: Max 5 actions per user per day
-
-**Multi-Agent Collaboration Example:**
+**Example Parsing:**
 ```
-1. Analyzer Agent detects: "EC2 i-abc123 idle for 6 hours"
-2. Analyzer triggers Optimizer Agent with waste data
-3. Optimizer Agent:
-   - Queries AWS Compute Optimizer: "Recommends stopping"
-   - Checks CloudWatch: CPU 2% avg, Network 0.1 MB/hr
-   - Generates recommendation: "Stop instance, save $8.35/month"
-4. User approves recommendation in Slack
-5. Executor Agent:
-   - Creates AMI backup (takes 5 minutes)
-   - Stops EC2 instance
-   - Sends confirmation: "Instance stopped, backup: ami-xyz789"
-```
+Input: "नीले मंदिर के पीछे 50 मीटर पर लाल घर"
+(Blue temple ke peeche 50 meter par lal ghar)
 
-**Integration with Latest AWS Features:**
-- **AWS Compute Optimizer:** Get official rightsizing recommendations (not just our rules)
-- **Database Savings Plans (Dec 2025):** Recommend RDS/DynamoDB commitments (up to 35% savings)
-- **AWS Cost Anomaly Detection:** Leverage AWS's ML for anomaly detection
-- **Model Context Protocol (MCP):** Future-proof agent-tool communication
-
-**Cost Control:**
-- Limit Bedrock Agent invocations to 1,000/day across all users
-- Use prompt caching for repeated queries (90% cost reduction)
-- Estimated cost: $5-10/month for 1,000 users
-
-**Example Recommendation (Enhanced):**
-```json
+Output:
 {
-  "id": "rec_abc123",
-  "type": "idle_ec2",
-  "title": "Stop idle EC2 instance i-1234567890abcdef0",
-  "description": "This t3.micro instance has been idle (CPU < 5%) for 6 hours. AWS Compute Optimizer also recommends stopping it.",
-  "savings": {
-    "monthly": 8.35,
-    "annual": 100.20,
-    "calculation": "t3.micro: $0.0116/hour × 720 hours/month"
+  "anchor": {
+    "type": "temple",
+    "attributes": ["blue"],
+    "confidence": 0.92
   },
-  "difficulty": "easy",
-  "implementation": {
-    "console": ["Go to EC2 Console", "Select instance i-1234567890abcdef0", "Actions → Stop"],
-    "cli": "aws ec2 stop-instances --instance-ids i-1234567890abcdef0",
-    "terraform": "# Set desired_capacity = 0 in your ASG config",
-    "one_click": "Approve in Slack to execute via Bedrock Executor Agent"
+  "vector": {
+    "direction": "behind",
+    "distance": 50,
+    "unit": "meters"
   },
-  "tradeoffs": "Instance will be unavailable. EBS data persists. You can restart anytime.",
-  "rollback": "aws ec2 start-instances --instance-ids i-1234567890abcdef0",
-  "confidence": 95,
-  "sources": ["CloudWatch metrics (6h avg CPU: 2%)", "AWS Compute Optimizer", "Cost Explorer"],
-  "tags": ["quick_win", "no_risk", "reversible"]
+  "target": {
+    "type": "house",
+    "attributes": ["red"],
+    "confidence": 0.88
+  }
 }
 ```
 
-### FR5: Assisted Optimization (NOT Fully Automated)
-**Priority:** High  
-**Description:** Help users execute optimizations safely
+**Amazon Bedrock Integration:**
+- Use **Claude 3.5 Sonnet** for complex spatial reasoning
+- Prompt engineering for Indian context (local landmarks, measurement units)
+- Few-shot learning with 500+ annotated examples
 
 **Acceptance Criteria:**
-- **User must explicitly approve each action** (no auto-execution)
-- **Confirmation flow:**
-  1. User clicks "Approve" on recommendation
-  2. System shows detailed confirmation modal:
-     - Resource details (ID, type, current cost)
-     - Exact action to be taken
-     - Estimated savings
-     - Risks and rollback steps
-  3. User must type resource ID to confirm (prevents accidental clicks)
-  4. System creates snapshot/backup (if applicable)
-  5. System executes action via AWS SDK
-  6. System sends confirmation email with rollback instructions
+- Extract anchor, vector, target with >85% accuracy
+- Handle ambiguous descriptions ("near the big tree")
+- Support compound directions ("50m north, then 20m east")
 
-- **Supported Actions (MVP):**
-  - Stop EC2 instances (creates AMI backup first)
-  - Delete unattached EBS volumes (creates snapshot first)
-  - Change S3 storage class to Intelligent-Tiering (reversible)
-  - ~~Modify RDS instance types~~ (NOT in MVP - too risky, causes downtime)
+---
 
-- **Safety Mechanisms:**
-  - Dry-run mode: Preview changes without executing
-  - Rollback instructions provided for every action
-  - Audit log stored in DynamoDB (immutable)
-  - Email notification after every action
-  - Rate limit: Max 5 actions per user per day (prevent bulk mistakes)
+### FR-3: Visual Grounding (Satellite Object Detection)
+**Priority:** P0  
+**Description:** Identify landmarks in satellite imagery
 
-- **IAM Permissions Required (User's AWS Account):**
-  ```json
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": [
-          "ec2:StopInstances",
-          "ec2:CreateImage",
-          "ec2:DeleteVolume",
-          "ec2:CreateSnapshot",
-          "s3:PutLifecycleConfiguration"
-        ],
-        "Resource": "*",
-        "Condition": {
-          "StringEquals": {
-            "aws:RequestedRegion": ["us-east-1", "us-west-2"]
-          }
-        }
-      }
-    ]
-  }
-  ```
-  - User must explicitly grant these (separate from read-only role)
-  - Permissions are optional (app works without them, just no auto-execution)
+**Data Sources:**
+- **Amazon Location Service** (Esri satellite tiles, 30cm resolution)
+- **Sentinel-2** (10m resolution, free, updated every 5 days)
+- **Google Earth Engine** (historical imagery for validation)
 
-### FR6: Educational Insights
-**Priority:** High  
-**Description:** Teach cloud economics through contextual explanations
+**Object Detection:**
+- **SageMaker Serverless Inference** with ResNet-50 backbone
+- **Custom training dataset:** 10,000 labeled images of Indian landmarks
+  - Temples (Hindu, Muslim, Christian, Sikh)
+  - Schools (government, private, anganwadi)
+  - Water bodies (tanks, ponds, rivers)
+  - Agricultural features (tube wells, grain silos)
+  - Infrastructure (cell towers, transformers, bus stops)
+
+**Detection Pipeline:**
+1. Fetch 1km² satellite tile centered on user's approximate GPS
+2. Run object detection model (SageMaker endpoint)
+3. Filter detections by confidence >0.75
+4. Match detected objects to anchor landmark description
 
 **Acceptance Criteria:**
+- Detect 90% of major landmarks (temples, schools, water tanks)
+- <5% false positive rate
+- Handle occlusions (trees covering buildings)
+- Process 1km² tile in <3 seconds
 
-**Contextual Learning:**
-- **Real-time Explanations:** AI explains WHY resources cost money when user views them
-  - Example: "EC2 charges per hour ($0.0116/hr for t3.micro), even when idle. Stopping = no compute charges, but EBS storage still costs $0.10/GB/month"
-- **Cost Comparisons:** Shows alternatives with calculations
-  - Example: "Lambda is 80% cheaper for your use case (runs 10 min/day): Lambda $0.50/month vs EC2 $8.35/month"
-- **AWS Documentation Links:** Direct links to relevant pricing pages
-- **Best Practices:** Suggests AWS Well-Architected cost optimization patterns
+---
 
-**Achievement System (Simple):**
-- **Milestone Badges (6 total):**
-  - 🏆 **First Save:** Implemented first recommendation
-  - 💰 **Cost Saver:** Saved $50 total
-  - 🔥 **Week Streak:** Stayed under budget for 7 days
-  - 📚 **AWS Learner:** Read 10 cost explanations
-  - 🎯 **Budget Master:** Stayed under budget for 30 days
-  - 🌟 **Power User:** Connected Slack + GitHub
+### FR-4: Geospatial Triangulation
+**Priority:** P0  
+**Description:** Calculate target GPS coordinates from spatial relationships
 
-**Progress Tracking:**
-- Dashboard shows: "You've saved $X this month"
-- Savings history chart (last 30 days)
-- Recommendations implemented count
-- Free tier usage percentage
+**Mathematical Operations:**
+- **Bearing calculation:** Convert "behind" to azimuth (0-360°)
+- **Distance projection:** Apply Haversine formula for curved Earth
+- **Coordinate transformation:** WGS84 (GPS) ↔ UTM (meters)
 
-**No Leaderboards, No Points, No Challenges** - Keep it simple and privacy-focused
+**Directional Mapping:**
+```python
+DIRECTION_BEARINGS = {
+    "north": 0,
+    "northeast": 45,
+    "east": 90,
+    "southeast": 135,
+    "south": 180,
+    "southwest": 225,
+    "west": 270,
+    "northwest": 315,
+    "behind": 180,  # Relative to anchor orientation
+    "front": 0,
+    "left": 270,
+    "right": 90
+}
+```
 
-### FR7: Budget Management
-**Priority:** High  
-**Description:** Set and track spending budgets
-
-**Acceptance Criteria:**
-- Users can set daily/weekly/monthly budgets
-- Visual progress bars show spend vs. budget
-- Automatic pause of resources when budget exceeded (optional)
-- Budget recommendations based on usage patterns
-
-### FR8: Developer Workflow Integration
-**Priority:** Critical (for broader market)  
-**Description:** Integrate with tools developers actually use
-
-**Acceptance Criteria:**
-
-**Slack Integration:**
-- Slack bot: `/cloudcost status` shows current spend
-- Real-time alerts in #aws-costs channel
-- Interactive buttons: "Approve" recommendation directly in Slack
-- Daily digest: "Yesterday's spend: $12.50 (+5% vs. avg)"
-- Team notifications: "@channel Budget at 90%!"
-
-**GitHub Actions Integration:**
-- GitHub Action runs on every PR
-- Comments on PR: "This deployment will cost ~$X/month"
-- Blocks merge if cost > threshold (configurable)
-- Example comment:
-  ```
-  💰 CloudCost Copilot Analysis
-  
-  Estimated monthly cost: $45.00
-  Changes:
-  - New Lambda function: +$5.00/month
-  - New DynamoDB table: +$2.50/month
-  
-  ✅ Within budget ($100/month)
-  ```
-
-**VS Code Extension:**
-- Shows cost estimates inline in Terraform/CDK files
-- Hover over resource: "This EC2 instance costs $0.096/hour = $69.12/month"
-- Suggests cheaper alternatives: "💡 Switch to t3.medium to save $20/month"
-- Real-time validation: Red underline if resource exceeds budget
-- Commands:
-  - `CloudCost: Estimate Current File` - Calculate total cost
-  - `CloudCost: Check Budget` - Show current spend
-  - `CloudCost: Optimize` - Get recommendations
-- Supports: Terraform (.tf), AWS CDK (TypeScript/Python), CloudFormation (.yaml)
-
-**CI/CD Integration:**
-- Pre-deployment cost estimation
-- Terraform/CDK cost analysis
-- Alert if infrastructure change increases costs by >20%
-
-**API-First Architecture:**
-- RESTful API for all features
-- Webhooks for custom integrations
-- SDKs: Python, JavaScript, Go
-- Example:
-  ```python
-  from cloudcost import CloudCostClient
-  
-  client = CloudCostClient(api_key="...")
-  spend = client.get_current_spend()
-  if spend > 80:
-      client.send_alert("Budget warning!")
-  ```
-
-**CLI Tool:**
-- `cloudcost status` - Show current spend
-- `cloudcost recommendations` - List optimizations
-- `cloudcost approve <rec_id>` - Execute recommendation
-- `cloudcost budget set 100` - Set monthly budget
-- `cloudcost terraform estimate` - Estimate Terraform costs
-
-### FR9: Multi-Account & Team Features
-**Priority:** High (for startups)  
-**Description:** Support teams and multiple AWS accounts
+**Algorithm:**
+```
+1. Identify anchor landmark GPS (from satellite detection)
+2. Determine anchor orientation (building facade direction)
+3. Convert relative direction to absolute bearing
+4. Project distance along bearing to get target GPS
+5. Apply confidence radius based on description ambiguity
+```
 
 **Acceptance Criteria:**
+- <10 meter error for precise descriptions ("50m north")
+- <50 meter error for vague descriptions ("near the temple")
+- Return confidence radius (e.g., "±15m")
 
-**Multi-Account Management:**
-- Connect up to 10 AWS accounts (Pro tier)
-- Consolidated cost view across accounts
-- Per-account breakdown
-- Account tagging: "Production", "Staging", "Dev"
+---
 
-**Team Collaboration:**
-- Invite team members (email-based)
-- Role-based access control:
-  - **Owner:** Full access, billing
-  - **Admin:** Approve optimizations, view all data
-  - **Member:** View-only, can't approve actions
-  - **Viewer:** Dashboard access only
-- Activity feed: "Raj stopped EC2 instance i-abc123"
-- Comments on recommendations: "Should we approve this?"
+### FR-5: Multi-Turn Clarification
+**Priority:** P1  
+**Description:** Interactive refinement for ambiguous locations
 
-**Cost Allocation:**
-- Tag-based cost allocation
-- Per-developer cost tracking (via tags)
-- Department/project cost breakdown
-- Chargeback reports: "Frontend team: $120, Backend team: $180"
+**Trigger Conditions:**
+- Multiple matching landmarks detected (3 blue temples in area)
+- Insufficient spatial information ("near the temple" without direction)
+- Low confidence detection (<0.7)
 
-**Shared Budgets:**
-- Team budget: $500/month
-- Per-developer budgets: $50/month each
-- Alerts when individual exceeds personal budget
-
-### FR9: Cost Comparison & Benchmarking
-**Priority:** Medium  
-**Description:** Compare costs against similar projects/users
+**Clarification Flow:**
+1. Agent asks follow-up question via WhatsApp
+   - "मैंने 3 नीले मंदिर देखे। क्या आपका मतलब बड़े वाले से है?"
+   - (I see 3 blue temples. Do you mean the big one?)
+2. User responds with additional context
+3. Agent re-runs detection with refined parameters
 
 **Acceptance Criteria:**
-- Anonymous benchmarking: "Your costs are 40% higher than similar projects"
-- Best practices from efficient users
-- Industry-standard cost baselines
+- <2 clarification questions per request
+- 90% resolution rate after clarification
 
-### FR10: Integration with Learning Platforms
-**Priority:** Low  
-**Description:** Integrate with educational platforms (Coursera, Udemy, AWS Educate)
+---
+
+### FR-6: WhatsApp Bot Integration
+**Priority:** P0  
+**Description:** Seamless user experience via WhatsApp Business API
+
+**User Flow:**
+1. User sends voice note to WhatsApp number
+2. Bot acknowledges: "आपका स्थान खोज रहे हैं..." (Searching your location...)
+3. Bot returns Google Maps link with GPS coordinates
+4. Optional: Send static map image with marker
+
+**Technical Integration:**
+- **Twilio WhatsApp API** or **Meta WhatsApp Business API**
+- **Amazon API Gateway** webhook for incoming messages
+- **AWS Lambda** for message processing
+- **Amazon S3** for voice note storage (ephemeral, 24h retention)
 
 **Acceptance Criteria:**
-- Detect course-related resources (via tags)
-- Provide course-specific cost guidance
-- Share cost reports with instructors
+- <5 second end-to-end response time
+- Support 1,000 concurrent users
+- Handle media attachments (voice, images)
 
-## Non-Functional Requirements
+---
 
-### NFR1: Performance
-- Dashboard loads in < 3 seconds (realistic with API calls)
-- Cost predictions generated in < 10 seconds (Amazon Forecast latency)
-- Alerts delivered within 1 hour of threshold breach (limited by Cost Explorer delay)
+## 4. Non-Functional Requirements
 
-### NFR2: Scalability
-- Support 1,000 concurrent users (MVP target)
-- Handle 10 AWS accounts per user
-- Process 100K+ cost data points per day
+### NFR-1: Latency
+**Requirement:** <3 seconds end-to-end processing
 
-### NFR3: Security
-- AWS credentials stored encrypted (AWS Secrets Manager)
-- **Read-only IAM permissions by default** (minimal scope):
-  ```json
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": [
-          "ce:GetCostAndUsage",
-          "ce:GetCostForecast",
-          "cloudwatch:GetMetricStatistics",
-          "cloudwatch:ListMetrics",
-          "ec2:DescribeInstances",
-          "ec2:DescribeVolumes",
-          "ec2:DescribeInstanceTypes",
-          "rds:DescribeDBInstances",
-          "s3:ListAllMyBuckets",
-          "s3:GetBucketLocation",
-          "s3:GetMetricsConfiguration"
-        ],
-        "Resource": "*"
-      }
-    ]
-  }
-  ```
-- Write permissions require explicit user approval (separate role)
-- Data encrypted at rest (DynamoDB KMS, S3 SSE)
-- Data encrypted in transit (TLS 1.3)
+**Latency Budget:**
+- Voice transcription (Transcribe): 0.8s
+- Spatial entity extraction (Bedrock): 0.6s
+- Satellite tile fetch (Location Service): 0.4s
+- Object detection (SageMaker): 0.8s
+- Geospatial calculation (Lambda): 0.2s
+- Response delivery (WhatsApp): 0.2s
+- **Total:** 3.0s
 
-### NFR4: Reliability
-- 99% uptime SLA (realistic for student project)
-- Automated error recovery (retry with exponential backoff)
-- Data backup every 24 hours (DynamoDB point-in-time recovery)
+**Optimization Strategies:**
+- Cache satellite tiles for frequently requested areas
+- Pre-warm SageMaker endpoints during peak hours
+- Use Bedrock streaming for faster perceived latency
 
-### NFR5: Usability
-- Onboarding completed in < 10 minutes (includes IAM role setup)
-- Mobile-responsive design (works on phones)
-- Accessible (WCAG 2.1 AA compliance target)
+**Acceptance Criteria:**
+- P95 latency <3s
+- P99 latency <5s
 
-### NFR6: Cost Efficiency
-- Platform operational cost < $0.05 per user/month (target)
-- Serverless architecture to minimize fixed costs
+---
 
-## User Stories
+### NFR-2: Cost Efficiency
+**Requirement:** <₹0.50 per geocoding request
 
-### US1: Prevent Bill Shock
-**As a** student learning AWS  
-**I want** real-time alerts when I'm about to overspend  
-**So that** I don't exhaust my credits unexpectedly
+**Cost Breakdown (Target):**
+- Amazon Transcribe: ₹0.06 (30s audio)
+- Amazon Bedrock (Claude 3.5 Sonnet): ₹0.12 (500 tokens)
+- Amazon Location Service: ₹0.08 (1 tile fetch)
+- SageMaker Serverless Inference: ₹0.15 (1 inference)
+- AWS Lambda: ₹0.02 (compute)
+- Amazon S3: ₹0.01 (storage)
+- WhatsApp API: ₹0.05 (message delivery)
+- **Total:** ₹0.49
 
-### US2: Learn Cloud Economics
-**As a** beginner developer  
-**I want** explanations of why resources cost money  
-**So that** I can make informed architectural decisions
+**Cost Optimization:**
+- Use **SageMaker Serverless** (no idle GPU costs)
+- Cache satellite tiles in **ElastiCache** (₹0.02 vs ₹0.08 per fetch)
+- Batch Bedrock requests for high-volume users
+- Use **Amazon Nova Lite** for simple queries (₹0.06 vs ₹0.12)
 
-### US3: Optimize Automatically
-**As a** busy student  
-**I want** one-click cost optimizations  
-**So that** I don't waste time manually managing resources
+**Acceptance Criteria:**
+- Average cost <₹0.50 per request
+- 90% of requests use cached tiles
 
-### US4: Track Free Tier Usage
-**As a** AWS free tier user  
-**I want** visibility into free tier limits  
-**So that** I can maximize free resources before paying
+---
 
-### US5: Compare Alternatives
-**As a** developer choosing services  
-**I want** cost comparisons between options (EC2 vs Lambda vs Fargate)  
-**So that** I can pick the most cost-effective solution
+### NFR-3: Accuracy
+**Requirement:** 85% of coordinates within 50m of ground truth
 
-## Technical Constraints
+**Validation Methodology:**
+- Ground truth dataset: 1,000 manually verified locations
+- Test across diverse terrains (urban, rural, hilly, coastal)
+- Measure Euclidean distance between predicted and actual GPS
 
-### TC1: AWS Service Limitations
-- **Cost Explorer API:** 4-8 hour data delay (cannot be avoided)
-- **Cost Explorer API:** $0.01 per request (must minimize calls)
-- **Cost Explorer API:** 4 requests/second rate limit
-- **CloudWatch metrics:** 5-minute granularity (best available)
-- **Free tier limits:** Vary by service and region
+**Error Sources:**
+- Satellite imagery resolution (30cm-10m)
+- Landmark ambiguity (multiple similar buildings)
+- Outdated imagery (new construction not visible)
+- User description vagueness
 
-### TC2: AI Model Constraints
-- **Amazon Bedrock:** Rate limits vary by model (Nova Lite: 100 req/min)
-- **Amazon Forecast:** Requires 7+ days of data for accurate predictions
-- **Prediction accuracy:** ±20% realistic for variable student workloads
+**Acceptance Criteria:**
+- 85% accuracy within 50m
+- 95% accuracy within 100m
+- <2% catastrophic failures (>500m error)
 
-### TC3: User Permissions
-- Users must grant IAM read permissions (setup friction)
-- Write permissions optional (for auto-remediation)
-- AWS Organizations accounts may have restricted billing access
+---
 
-### TC4: Regional Availability
-- Cost Explorer available in us-east-1 only (global data, but API endpoint is regional)
-- Amazon Forecast available in limited regions (us-east-1, us-west-2, eu-west-1)
-- Solution works for accounts in any region, but APIs called from us-east-1
+### NFR-4: Scalability
+**Requirement:** Handle 10,000 requests/hour during peak
 
-## Success Metrics
+**Architecture Constraints:**
+- Fully serverless (Lambda, SageMaker Serverless)
+- Auto-scaling for all components
+- No single point of failure
 
-### Primary Metrics (Hackathon Evaluation)
-1. **Cost Savings:** Average 30% reduction in AWS spend per user
-2. **Adoption:** 500 active users within 3 months (students + developers)
-3. **Engagement:** 50% weekly retention rate
+**Load Profile:**
+- Peak: 10,000 requests/hour (2.78 requests/second)
+- Average: 2,000 requests/hour
+- Burst: 50 requests/second (flash sales, emergencies)
 
-### Secondary Metrics
-4. **Learning Impact:** 70% of users report better understanding of AWS pricing
-5. **Bill Shock Prevention:** 80% of users avoid unexpected charges
-6. **Recommendation Acceptance:** 40% of recommendations implemented
-7. **Developer Integration:** 30% of users connect Slack/GitHub within first week
+**Acceptance Criteria:**
+- Zero throttling at peak load
+- API Gateway: 10,000 RPS limit
+- SageMaker: 10 concurrent inferences
 
-### Business Metrics (Post-Hackathon)
-8. **Revenue:** $5K MRR within 6 months (500 users × $10/month)
-9. **Viral Coefficient:** 1.2 (each user refers 1.2 new users)
-10. **Churn Rate:** <10% monthly
-11. **NPS Score:** >50 (promoters - detractors)
+---
 
-### Technical Metrics
-12. **API Uptime:** 99% (realistic for MVP)
-13. **Alert Latency:** <2 hours (limited by Cost Explorer delay)
-14. **Prediction Accuracy:** ±20% for 70% of forecasts
-15. **Bedrock Agent Success Rate:** >90% of recommendations are actionable
+### NFR-5: Security & Privacy
+**Requirement:** Protect user location data, comply with DPDP Act 2023
 
-## Out of Scope (Future Enhancements)
+**Data Protection:**
+- Voice notes deleted after 24 hours (ephemeral processing)
+- GPS coordinates not stored (stateless API)
+- Encryption at rest (S3 SSE-KMS)
+- Encryption in transit (TLS 1.3)
 
-### Phase 2 (Post-Hackathon)
-- Multi-cloud support (Azure, GCP)
-- Advanced FinOps features (chargeback, showback, cost allocation tags)
-- Custom pricing models for enterprises
-- Mobile native apps (iOS/Android)
-- Terraform/CDK cost estimation (pre-deployment)
-- AWS Marketplace listing
+**Access Control:**
+- API authentication via API keys
+- Rate limiting: 100 requests/hour per user
+- No PII logging (only anonymized metrics)
 
-### Phase 3 (Scale)
-- White-label solution for universities
-- Enterprise SSO (SAML, Okta)
-- Advanced analytics (BigQuery, Snowflake integration)
-- Custom ML models (per-user prediction tuning)
-- Multi-region deployment (global availability)
+**Compliance:**
+- DPDP Act 2023 (Indian data privacy)
+- No cross-border data transfer (all processing in ap-south-1)
 
-### Not Planned
-- Support for non-AWS clouds in MVP
-- Real-time monitoring (limited by AWS Cost Explorer 4-hour delay)
-- Automatic optimization without user approval (safety-first approach)
-- Support for all 200+ AWS services (focus on top 10 that cover 85% of costs)
+**Acceptance Criteria:**
+- Zero data breaches
+- Automated voice note deletion
+- Audit logs retained for 90 days
 
-## Assumptions
+---
 
-1. Users have basic AWS knowledge (can create IAM users)
-2. Users have access to AWS Cost Explorer (enabled by default)
-3. Users are willing to grant read-only IAM permissions
-4. Internet connectivity available for real-time monitoring
+## 5. Success Metrics
 
-## Dependencies
+### Primary KPIs
+1. **Geocoding Accuracy:** >85% within 50m
+2. **Response Time:** P95 <3 seconds
+3. **Cost Efficiency:** <₹0.50 per request
+4. **User Adoption:** 10,000 requests/month within 6 months
 
-### External Dependencies
-- AWS Cost Explorer API (cost data)
-- AWS CloudWatch API (resource metrics)
-- Amazon Bedrock API (AI recommendations)
-- AWS SDK for resource management
+### Secondary KPIs
+1. **Failed Delivery Reduction:** 30% decrease for pilot logistics partners
+2. **User Satisfaction:** NPS >60
+3. **Clarification Rate:** <15% of requests require follow-up
+4. **Satellite Cache Hit Rate:** >90%
 
-### Internal Dependencies
-- User authentication system
-- Database for historical cost data
-- Background job scheduler for monitoring
+---
 
-## Risks & Mitigation
+## 6. Out of Scope (Phase 1)
 
-### Risk 1: AWS API Rate Limits
-**Impact:** High  
-**Probability:** Medium  
-**Mitigation:** 
-- Implement exponential backoff (2^n seconds delay)
-- Cache Cost Explorer responses for 1 hour
-- Batch requests where possible
-- Monitor rate limit errors in CloudWatch
+- Indoor navigation (building floor plans)
+- Real-time traffic routing
+- Multi-stop route optimization
+- Integration with navigation apps (Waze, Google Maps)
+- Offline mode (requires internet)
 
-### Risk 2: Inaccurate Cost Predictions
-**Impact:** High  
-**Probability:** High (student usage is unpredictable)  
-**Mitigation:** 
-- Display confidence intervals (e.g., "$45-55 with 70% confidence")
-- Require 7+ days of data before showing predictions
-- Use conservative estimates (round up)
-- Clearly label as "estimates, not guarantees"
+---
 
-### Risk 3: User Distrust of Optimization Actions
-**Impact:** Medium  
-**Probability:** High  
-**Mitigation:** 
-- Require explicit approval for every action
-- Show detailed confirmation with risks
-- Create backups before destructive actions
-- Provide rollback instructions
-- Build trust through transparency
+## 7. Assumptions & Dependencies
 
-### Risk 4: AWS Pricing Changes
-**Impact:** Medium  
-**Probability:** Low  
-**Mitigation:** 
-- Use AWS Price List API for up-to-date pricing
-- Update pricing data weekly
-- Notify users of significant pricing changes
+### Assumptions
+1. Users have smartphones with WhatsApp
+2. 4G network available (minimum 1 Mbps)
+3. Landmarks are visible in satellite imagery
+4. Users can describe locations in natural language
 
-### Risk 5: Cost Explorer API Costs Exceed Revenue
-**Impact:** Critical  
-**Probability:** Medium  
-**Mitigation:**
-- Poll hourly (not every 5 minutes)
-- Aggressive caching (1-hour TTL)
-- Limit free tier to 10 API calls/day per user
-- Charge premium users for more frequent updates
+### Dependencies
+1. Amazon Location Service availability in ap-south-1
+2. SageMaker model training dataset (10,000 labeled images)
+3. WhatsApp Business API approval
+4. Sentinel-2 satellite imagery access
 
-### Risk 6: AWS Organizations Billing Access
-**Impact:** Medium  
-**Probability:** Medium (many students use university accounts)  
-**Mitigation:**
-- Document Organizations limitations in onboarding
-- Provide workaround guide (request management account access)
-- Scope MVP to "individual AWS accounts only"
+---
 
-## Compliance & Legal
+## 8. Risks & Mitigations
 
-- **Data Privacy:** GDPR, CCPA compliant (no PII stored)
-- **AWS Terms of Service:** Comply with AWS Acceptable Use Policy
-- **Open Source Licenses:** MIT license for codebase
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+| Low satellite resolution in remote areas | High | Medium | Fallback to 10m Sentinel-2 imagery |
+| Bedrock rate limits during peak | High | Low | Implement request queuing with SQS |
+| Ambiguous landmark descriptions | Medium | High | Multi-turn clarification workflow |
+| Outdated satellite imagery | Medium | Medium | Display imagery date to user |
 
-## Glossary
+---
 
-- **Free Tier:** AWS's free usage limits for new accounts (12 months)
-- **Idle Resource:** AWS resource consuming costs with minimal utilization
-- **Cost Explorer:** AWS service for viewing and analyzing costs
-- **IAM:** Identity and Access Management (AWS permissions system)
-- **Bedrock:** AWS's managed generative AI service
+## Appendix A: Example Use Cases
+
+### Use Case 1: E-Commerce Delivery
+**Scenario:** Flipkart delivery agent in rural Maharashtra
+
+**Input (Marathi):** "शाळेच्या मागे 100 मीटर, लाल दरवाजा"  
+(Shaalecha maage 100 meter, laal darwaja)
+
+**Translation:** "100 meters behind the school, red door"
+
+**Processing:**
+1. Transcribe Marathi audio
+2. Extract: Anchor=school, Vector=100m behind, Target=red door
+3. Fetch satellite tile, detect school building
+4. Calculate GPS 100m south of school
+5. Return: 19.1234°N, 73.5678°E (±20m)
+
+**Outcome:** Delivery agent navigates directly, saves 15 minutes
+
+---
+
+### Use Case 2: Emergency Medical Response
+**Scenario:** Ambulance dispatch in rural Rajasthan
+
+**Input (Hindi):** "बड़े पीपल के पेड़ के पास, गाँव के बाहर"  
+(Bade peepal ke ped ke paas, gaon ke bahar)
+
+**Translation:** "Near the big banyan tree, outside the village"
+
+**Processing:**
+1. Transcribe Hindi audio
+2. Extract: Anchor=banyan tree, Vector=near, Context=outside village
+3. Detect large tree in satellite imagery (distinctive canopy)
+4. Return GPS with 50m confidence radius
+
+**Outcome:** Ambulance reaches patient 8 minutes faster
 
 ---
 
 **Document Version:** 1.0  
-**Last Updated:** February 11, 2026  
-**Author:** AI for Bharat Hackathon Team
+**Last Updated:** February 14, 2026  
+**Owner:** PinPoint-Bharat Team
