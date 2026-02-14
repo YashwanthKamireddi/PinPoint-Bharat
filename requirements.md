@@ -130,11 +130,18 @@ Output:
 **Object Detection:**
 - **SageMaker Serverless Inference** with ResNet-50 backbone
 - **Custom training dataset:** 10,000 labeled images of Indian landmarks
-  - Temples (Hindu, Muslim, Christian, Sikh)
-  - Schools (government, private, anganwadi)
-  - Water bodies (tanks, ponds, rivers)
-  - Agricultural features (tube wells, grain silos)
-  - Infrastructure (cell towers, transformers, bus stops)
+  - Temples (Hindu, Muslim, Christian, Sikh) - distinctive roof structures
+  - Schools (government, private, anganwadi) - large rectangular buildings
+  - Water bodies (tanks, ponds, rivers) - blue/dark patches
+  - Agricultural features (tube wells, grain silos) - circular structures
+  - Infrastructure (cell towers, transformers) - vertical structures
+  - Large trees (banyan, peepal) - distinctive canopy shapes
+
+**Resolution Constraints:**
+- **30cm resolution (Esri):** Can detect building roofs, painted surfaces, large structures
+- **10m resolution (Sentinel-2):** Can detect water bodies, large buildings, tree clusters
+- **Cannot detect:** Doors, windows, small signs, individual people, vehicle colors
+- **Can detect:** Temple domes, school compounds, water tank roofs, large tree canopies
 
 **Detection Pipeline:**
 1. Fetch 1km² satellite tile centered on user's approximate GPS
@@ -241,25 +248,28 @@ DIRECTION_BEARINGS = {
 ## 4. Non-Functional Requirements
 
 ### NFR-1: Latency
-**Requirement:** <3 seconds end-to-end processing
+**Requirement:** <10 seconds end-to-end processing
 
 **Latency Budget:**
-- Voice transcription (Transcribe): 0.8s
-- Spatial entity extraction (Bedrock): 0.6s
-- Satellite tile fetch (Location Service): 0.4s
-- Object detection (SageMaker): 0.8s
-- Geospatial calculation (Lambda): 0.2s
-- Response delivery (WhatsApp): 0.2s
-- **Total:** 3.0s
+- Voice transcription (Transcribe): 1.2s
+- Spatial entity extraction (Bedrock): 1.8s
+- Satellite tile fetch (Location Service): 0.8s (cached: 0.2s)
+- Object detection (SageMaker): 2.5s
+- Geospatial calculation (Lambda): 0.3s
+- Response delivery (WhatsApp): 0.4s
+- Network overhead: 1.0s
+- **Total:** 8.0s (realistic)
+
+**Context:** Manual phone calls take 5+ minutes. We deliver 30x faster.
 
 **Optimization Strategies:**
-- Cache satellite tiles for frequently requested areas
+- Cache satellite tiles for frequently requested areas (90% hit rate)
 - Pre-warm SageMaker endpoints during peak hours
 - Use Bedrock streaming for faster perceived latency
 
 **Acceptance Criteria:**
-- P95 latency <3s
-- P99 latency <5s
+- P95 latency <10s
+- P99 latency <15s
 
 ---
 

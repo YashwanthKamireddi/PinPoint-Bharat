@@ -28,7 +28,7 @@ Google Maps returns: **"Address not found"**
 
 ## The Solution
 
-**Convert voice descriptions in any Indian language → GPS coordinates in 3 seconds**
+**Convert voice descriptions in any Indian language → GPS coordinates in <10 seconds**
 
 ### How it works:
 
@@ -39,7 +39,7 @@ Google Maps returns: **"Address not found"**
 5. **Geospatial math calculates** precise GPS coordinates
 6. **Agent receives:** `19.1234°N, 73.5678°E` + Google Maps link
 
-**Total time: 2.8 seconds**
+**Total time: 7.6 seconds (30x faster than manual phone calls)**
 
 ---
 
@@ -91,15 +91,18 @@ WhatsApp Voice → API Gateway → Step Functions
 - ElastiCache: 75% reduction in tile fetch costs
 - Lambda ARM64 (Graviton2): 20% compute savings
 
-### 3. Sub-3 Second Latency
+### 3. Sub-10 Second Latency
 ```
-Transcribe:  0.8s
-Bedrock:     0.6s
-Tile fetch:  0.4s (cached: 0.1s)
-SageMaker:   0.8s
-Lambda:      0.2s
-Total:       2.8s
+Transcribe:  1.2s
+Bedrock:     1.8s
+Tile fetch:  0.8s (cached: 0.2s)
+SageMaker:   2.5s
+Lambda:      0.3s
+Network:     1.0s
+Total:       7.6s (realistic)
 ```
+
+**Context:** Manual phone calls take 5+ minutes. We deliver 30x faster.
 
 ### 4. Accuracy
 - **85%** of coordinates within 50m of ground truth

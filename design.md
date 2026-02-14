@@ -5,7 +5,7 @@
 ### 1.1 Design Philosophy
 
 PinPoint-Bharat implements an **Event-Driven Serverless Architecture** with **Multimodal AI Agents** to achieve:
-- **Sub-3 second latency** (real-time geocoding)
+- **Sub-10 second latency** (30x faster than manual calls)
 - **Cost optimization** (<₹0.50 per request)
 - **Infinite scalability** (serverless auto-scaling)
 - **Spatial computing** (satellite imagery + geospatial math)
